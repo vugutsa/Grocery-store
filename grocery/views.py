@@ -5,7 +5,7 @@ import datetime as dt
 
 def welcome(request):
     return render(request, 'welcome.html')
-def grocery_today(request):
+def index(request):
     date = dt.date.today()
     day = convert_dates(date)
     html = f'''
@@ -15,7 +15,7 @@ def grocery_today(request):
             </body>
         </html>
             '''
-    return render(request, 'all-grocery/today_grocery.html', {"date": date,})
+    return render(request, 'all-grocery/index.html', {"date": date,})
 def convert_dates(dates):
     
     # Function that gets the weekday number for the date.
@@ -42,3 +42,19 @@ def past_days_grocery(request, past_date):
         return redirect(news_of_day)
 
     return render(request, 'all-grocery/past-news.html', {"date": date})
+
+def search_results(request):
+    
+    if 'product' in request.GET and request.GET["product"]:
+        search_term = request.GET.get("product")
+        searched_products = Product.search_by_title(search_term)
+        message = f"{search_term}"
+
+        return render(request, 'all-grocery/search.html',{"message":message,"products": searched_products})
+
+    else:
+        message = "You haven't searched for any term"
+        return render(request, 'all-grocery/search.html',{"message":message})
+    
+def store(request):
+    context 
