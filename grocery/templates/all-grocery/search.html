@@ -6,7 +6,6 @@
     {% if product%}
       <h2>Found {{ product|length }} of searched term {{message}}</h2>
     {% else %}
-      <h2> Found 0 products for the search item{{message}}</h2>
     {% endif %}
 
   </div>
@@ -17,6 +16,8 @@
     {% for product in products %}
       <div class="col-sm-6 col-md-3">
           <h1>{{product.title}}</h1>
+          <h1>{{product.image}}</h1>
+          <img src="{{product.image.url}}" class="img-responsive w-100 btn btn-outline-info" alt=""> 
       </div>
     {% endfor %}
   {% endif %}

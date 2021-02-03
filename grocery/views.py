@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http  import HttpResponse,Http404
 import datetime as dt
+from django.contrib.auth.decorators import login_required
 from .models import Product,OrderProduct,Order
 # Create your views here.
 
@@ -73,6 +74,12 @@ def search_results(request):
     else:
         message = "You haven't searched for any term"
         return render(request, 'all-grocery/search.html',{"message":message})
+    
+def get_product(request, id):
+    product = Product.objects.get(pk=id)
+
+    return render(request, 'product.html', {'product':product})
+    
 def ProductDetails(request):
     context = {}
     return render('product.html')

@@ -12,17 +12,19 @@
 <body>
     <div class="row">
         {% for product in products %}
-        <div class="col-lg-4">
-            <img class="thumbnail" style="width: 350px;height: 200px; box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);"
+        <div class="col-lg-3">
+            <img class="thumbnail" style="width: 250px;height: 250px; box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);"
                 src="{{product.image.url}}">
             <div class="box-element product"
                 style="box-shadow:hsl(0, 0%, 80%) 0 0 16px;background-color: #fff; border-radius: 4px;padding: 10px;">
-                <h6><strong>{{product.title}}</strong></h6>
+                <h6 style="font-size: 20px; font-style: italic;"><strong>{{product.title}}</strong></h6>
                 <hr>
-                <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn"
+                <button class="btn btn-success" data-product="{{product.id}}" data-action="add" 
                     update-cart>Add to Cart</button>
-                <a class="btn btn-outline-success" href="#">View</a>
-                <h4 style="display: inline-block;"><strong>${{product.price|floatformat:2}}</strong></h4>
+                <!-- <a class="btn btn-primary" href="#">View</a> -->
+                <a  class="btn btn-primary" href="/product/{{product.id}}">View product</a>
+
+                <h4 style="display: inline-block;"><strong>ksh{{product.price}}</strong></h4>
             </div>
             </div>
       {% endfor %}

@@ -7,18 +7,12 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 CATEGORIES_CHOICES = (
-    ('C','Canned_foods'),
-    ('V', 'Vegetables'),
-    ('SP', 'Spices'),
-    ('BK', 'Bakery')
+    ('Canned','Canned_foods'),
+    ('Vegies', 'Vegetables'),
+    ('Spice', 'Spices'),
+    ('Bakery', 'Bakery')
 )
 
-LABEL_CHOICES = (
-    ('P','primary'),
-    ('S','secondary'),
-    ('D','danger'),
-    
-)
 class Product(models.Model):
     title = models.CharField(max_length =30)
     category = models.CharField(choices=CATEGORIES_CHOICES, max_length=60)
@@ -26,7 +20,6 @@ class Product(models.Model):
     description = models.TextField()
     slug = models.SlugField(max_length=150)
     image = models.ImageField(upload_to = 'images/')
-    labels = models.CharField(choices=LABEL_CHOICES, max_length=60)
     quantity = models.IntegerField(default=1)
     
     def __str__(self):
@@ -43,6 +36,14 @@ class Product(models.Model):
     def search_by_title(cls,search_term):
         product = cls.objects.filter(title__icontains=search_term)
         return product
+    
+    @classmethod
+    def get_product(cls,id):
+        try:
+            product = Product.objects.get(pk=id)
+        except ObjectDoesNotExist:
+            raise Http404()
+        return Product
     
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

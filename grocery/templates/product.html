@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+    {% block content %}
+    <hr class="mt-5">
+      <div class="container-fluid" style="font-size: 20px; font-family: 'Merienda', cursive;">
+            <div class="row">
+                <div class="col-md-4">
+                  <div class="product-img">
+                    <img class="product-image" src="{{ product.image.url }}" alt="img" height="200px" style="border-radius: 50%;">
+                  </div>
+                  <div class="subject-author">
+                    <h2 class="account-header mb-2">{{product.labels}}</h2>
+                  </div>
+
+                </div>
+
+                <div class="col-md-4">
+                  <p class="mt-5 ml-5">{{product.title}}<p><br>
+                  <h1 class="ml-3">Product Description</h1>
+                  <hr>
+                  <p class="mt-2"> {{product.description}}</p>
+                  <hr>
+                  <p class="mt-2"> {{product.quantity}}</p>
+                  <hr>
+                </div>
+                
+                
+            </div>
+        </div>
+    {% endblock %}

@@ -1,11 +1,11 @@
-<nav class="navbar navbar-inverse" style="background-color: darkgreen; font-family: 'Shadows Into Light', cursive; color: black;">
+<nav class="navbar navbar-inverse" style="background-color: darkgreen; color: black; font-family: 'Shadows Into Light', cursive; color: black;">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="{% url 'index' %}">Online Grocery store</a>
       <a class="navbar-brand" href="{% url 'about' %}">About</a>
       <a class="navbar-brand" href="{% url 'login' %}">Login</a>
-      <a class="navbar-brand" href="{% url 'register' %}">Register</a>
       <a class="navbar-brand" href="{% url 'checkout' %}">Checkout</a>
+      <a class="navbar-brand" href="{% url 'logout' %}">Logout</a>
     </div>
     <!-- Adding a search form  -->
     <div class="col-sm-4 col-md-4 navbar-right">
@@ -22,5 +22,8 @@
       </form>
     </div>
     <!-- search form end -->
+    <div class="icon">
+      <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+    </div>
   </div>
 </nav 
