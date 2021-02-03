@@ -73,3 +73,22 @@ def search_results(request):
     else:
         message = "You haven't searched for any term"
         return render(request, 'all-grocery/search.html',{"message":message})
+def ProductDetails(request):
+    context = {}
+    return render('product.html')
+def add_to_cart(request,slug):
+    product = get_object_or_404(Product, slugs=slug)
+    order_product = OrderProduct.objects.create(product=product)
+    order_qs = Order.objects.filter(user=request.user,ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.products.filter(product__slug=product.slug).exists():
+            order_product.quantity += 1
+            order_product.save()
+            
+    else:
+        order = Order.objects.create(user=request.user)
+        order.product.add(order_product)
+        return redirect("grocery:products",kwargs={'slug': slug})
+        
+     
