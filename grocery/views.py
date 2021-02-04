@@ -2,21 +2,31 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http  import HttpResponse,Http404
 import datetime as dt
 from django.contrib.auth.decorators import login_required
-from .models import Product,OrderProduct,Order
+from .models import *
+from .utils import *
+import json
+from django.http import JsonResponse
 # Create your views here.
 
 def welcome(request):
     return render(request, 'welcome.html')
 
-
 def index(request):
     date = dt.date.today()
     day = convert_dates(date)
     products = Product.objects.all()
-    print(products)
     context = {'products':products}
     
     return render(request, 'all-grocery/index.html',{"date": date, 'products':products})
+
+
+def cart(request):
+    data = cartData(request)
+    cartItems = data['cartItems']
+    items = data[items]
+
+    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    return render(request, 'all-grocery/cart.html', {'product':product})
 
 
 def about(request):
@@ -79,23 +89,28 @@ def get_product(request, id):
     product = Product.objects.get(pk=id)
 
     return render(request, 'product.html', {'product':product})
+
+
     
 def ProductDetails(request):
     context = {}
     return render('product.html')
-def add_to_cart(request,slug):
-    product = get_object_or_404(Product, slugs=slug)
-    order_product = OrderProduct.objects.create(product=product)
-    order_qs = Order.objects.filter(user=request.user,ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.products.filter(product__slug=product.slug).exists():
-            order_product.quantity += 1
-            order_product.save()
-            
-    else:
-        order = Order.objects.create(user=request.user)
-        order.product.add(order_product)
-        return redirect("grocery:products",kwargs={'slug': slug})
-        
-     
+
+def updateProduct(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    action = data['action']
+    print('Action:', action)
+    print('Product:', productId)
+    customer = request.user.customer
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    orderProduct, created = orderProduct.objects.get_or_create(order=order, product=product)
+    if action == 'add':
+        orderProduct.quantity = (orderProduct.quantity + 1)
+    elif action == 'remove':
+        orderProduct.quantity = (orderProduct.quantity - 1)
+    orderProduct.save()
+    if orderProduct.quantity <= 0:
+        orderProduct.delete()
+    return JsonResponse('product was added', safe=False)  

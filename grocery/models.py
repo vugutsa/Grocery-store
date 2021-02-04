@@ -12,6 +12,16 @@ CATEGORIES_CHOICES = (
     ('Spice', 'Spices'),
     ('Bakery', 'Bakery')
 )
+ADDRESS_CHOICES = (
+    ('Billing', 'Billing'),
+)
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
+    email = models.CharField(max_length=200)
+    def __str__(self):
+        return self.name       
 
 class Product(models.Model):
     title = models.CharField(max_length =30)
@@ -21,15 +31,11 @@ class Product(models.Model):
     slug = models.SlugField(max_length=150)
     image = models.ImageField(upload_to = 'images/')
     quantity = models.IntegerField(default=1)
+    digital = models.BooleanField(default=False,null=True, blank=True)
     
     def __str__(self):
         return self.title
     
-    def get_absolute_url(self):
-        return reverse("grocery:products", kwargs={'slug': self.slug})
-    
-    def get_add_to_cart_url(self):
-     return reverse("grocery:add-to-cart", kwargs={'slug': self.slug})
 
   
     @classmethod
@@ -44,19 +50,45 @@ class Product(models.Model):
         except ObjectDoesNotExist:
             raise Http404()
         return Product
-    
-class OrderProduct(models.Model):
+    @property
+    def get_cart_total(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_total for item in orderitems])
+        return total 
+
+    @property
+    def get_cart_items(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.quantity for item in orderitems])
+        return total
+	
+class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.title
-class Order(models.Model):   
+class Order(models.Model): 
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)  
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    products = models.ManyToManyField(OrderProduct)
+    products = models.ManyToManyField(OrderItem)
     pub_date = models.DateTimeField(auto_now_add=True,null=True)
     ordered =  models.BooleanField(default=False)
     ordered_delete = models.DateTimeField(auto_now_add=True,null=True)
+    complete = models.BooleanField(default=False)
+    transaction_id = models.CharField(max_length=100, null=True)
     
     def __str__(self):
         return self.user.username
+    
+class Address(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100)
+    zip = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=7, choices=ADDRESS_CHOICES)
+    default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username    
+        
         
