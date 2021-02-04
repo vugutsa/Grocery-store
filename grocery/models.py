@@ -5,7 +5,6 @@ from django.dispatch  import receiver
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
 # Create your models here.
-
 CATEGORIES_CHOICES = (
     ('Canned','Canned_foods'),
     ('Vegies', 'Vegetables'),
@@ -15,9 +14,8 @@ CATEGORIES_CHOICES = (
 ADDRESS_CHOICES = (
     ('Billing', 'Billing'),
 )
-
 class Customer(models.Model):
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200)
     def __str__(self):
@@ -32,17 +30,12 @@ class Product(models.Model):
     image = models.ImageField(upload_to = 'images/')
     quantity = models.IntegerField(default=1)
     digital = models.BooleanField(default=False,null=True, blank=True)
-    
     def __str__(self):
         return self.title
-    
-
-  
     @classmethod
     def search_by_title(cls,search_term):
         product = cls.objects.filter(title__icontains=search_term)
         return product
-    
     @classmethod
     def get_product(cls,id):
         try:
@@ -55,40 +48,32 @@ class Product(models.Model):
         orderitems = self.orderitem_set.all()
         total = sum([item.get_total for item in orderitems])
         return total 
-
     @property
     def get_cart_items(self):
         orderitems = self.orderitem_set.all()
         total = sum([item.quantity for item in orderitems])
         return total
-	
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    
     def __str__(self):
         return self.title
 class Order(models.Model): 
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)  
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, blank=True, on_delete=models.CASCADE)
     products = models.ManyToManyField(OrderItem)
     pub_date = models.DateTimeField(auto_now_add=True,null=True)
     ordered =  models.BooleanField(default=False)
     ordered_delete = models.DateTimeField(auto_now_add=True,null=True)
     complete = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length=100, null=True)
-    
+    transaction_id = models.CharField(max_length=100)
     def __str__(self):
         return self.user.username
-    
 class Address(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.OneToOneField(User, blank=True, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     zip = models.CharField(max_length=100)
     address_type = models.CharField(max_length=7, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=False)
-
     def __str__(self):
         return self.user.username    
-        
-        

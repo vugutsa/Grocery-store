@@ -21,8 +21,8 @@ def cookieCart(request):
 			order['get_cart_items'] += cart[i]['quantity']
 			item = {
 				'id':product.id,
-				'product':{'id':product.id,'name':product.name, 'price':product.price, 
-				'imageURL':product.imageURL}, 'quantity':cart[i]['quantity'],
+				'product':{'id':product.id,'title':product.title, 'price':product.price, 
+				'image':product.image}, 'quantity':cart[i]['quantity'],
 				'digital':product.digital,'get_total':total,
 				}
 			items.append(item)
@@ -64,4 +64,4 @@ def guestOrder(request, data):
 			order=order,
 			quantity=item['quantity'],
 		)
-	return customer, order
+	return Customer, order

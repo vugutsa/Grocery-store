@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect
 from django.http  import HttpResponse,Http404
 import datetime as dt
 from django.contrib.auth.decorators import login_required
@@ -21,7 +21,6 @@ def index(request):
 
 
 def cart(request):
-    data = cartData(request)
     cartItems = data['cartItems']
     items = data[items]
 
